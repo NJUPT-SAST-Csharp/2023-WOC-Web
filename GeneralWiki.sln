@@ -1,0 +1,16 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GeneralWiki", "GeneralWiki\GeneralWiki.csproj", "{275FCE2E-E7B4-4597-8A0D-25E252F4C310}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{275FCE2E-E7B4-4597-8A0D-25E252F4C310}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{275FCE2E-E7B4-4597-8A0D-25E252F4C310}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{275FCE2E-E7B4-4597-8A0D-25E252F4C310}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{275FCE2E-E7B4-4597-8A0D-25E252F4C310}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
