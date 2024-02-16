@@ -1,9 +1,15 @@
+using System.Text.Json.Serialization;
 using GeneralWiki.Application;
 using GeneralWiki.Data;
 using GeneralWiki.Service;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
-
+var connectString = builder.Configuration.GetConnectionString("WikiContext");
+builder.Services.AddControllers().AddJsonOptions(o=>
+    o.JsonSerializerOptions.ReferenceHandler=ReferenceHandler.IgnoreCycles);
+builder.Services.AddDbContext<WikiContext>(o =>
+    o.UseNpgsql(connectString));
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddControllers();
