@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace GeneralWiki.Service;
 
-public class UserDataProvider(WikiContext cts)
+public class UserDataProvider(WikiContext cts): IUserDataProvider
 {
     //1.登录用邮箱，匹配密码是否相等
     public async Task<string> LoginAsync(string email, string password)
@@ -89,7 +89,7 @@ public class UserDataProvider(WikiContext cts)
     }
 
     //5.通过id查找用户
-    public async Task<User> SelectUsersAsync(int id)
+    public async Task<User> IdSelectUserAsync(int id)
     {
         User? user = cts.Users.SingleOrDefault(x => x.Id == id);
         if (user is null) throw new Exception();
@@ -97,7 +97,7 @@ public class UserDataProvider(WikiContext cts)
     }
 
     //6.利用用户名查找用户，并返回多个包含查找字符串的数据，并进行排序
-    public async Task<IQueryable<User>> SelectUsersAsync(string name)
+    public async Task<IQueryable<User>> NameSelectUsersAsync(string name)
     {
         var users = cts.Users.Where(x => x.Name != null && x.Name.Contains(name)).OrderBy(x => x.Name);
         if (users.Count() is 0) throw new Exception();

@@ -7,7 +7,7 @@ namespace GeneralWiki.Controllers;
 [Route("api/[controller]/[action]")]
 [ApiController]
 
-public class UserController(UserDataProvider userDataProvider) : ControllerBase, IUserDataProvider
+public class UserController(IUserDataProvider userDataProvider) : ControllerBase
 {
     //1.µÇÂ¼
     [HttpPost]
@@ -70,7 +70,7 @@ public class UserController(UserDataProvider userDataProvider) : ControllerBase,
     {
         try
         {
-            return Ok(await userDataProvider.SelectUsersAsync(id));
+            return Ok(await userDataProvider.IdSelectUserAsync(id));
         }
         catch (Exception ex)
         {
@@ -84,7 +84,7 @@ public class UserController(UserDataProvider userDataProvider) : ControllerBase,
     {
         try
         {
-            return Ok(await userDataProvider.SelectUsersAsync(name));
+            return Ok(await userDataProvider.NameSelectUsersAsync(name));
         }
         catch (Exception ex)
         {
