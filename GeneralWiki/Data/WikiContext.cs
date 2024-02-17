@@ -10,6 +10,7 @@ public class WikiContext(DbContextOptions<WikiContext> options) : DbContext(opti
     public DbSet<Tag> Tags { get; set; }
     public DbSet<Category> Categories { get; set; }
     public DbSet<Picture> Pictures { get; set; }
+    public DbSet<User> Users { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
