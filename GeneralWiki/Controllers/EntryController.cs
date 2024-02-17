@@ -77,7 +77,7 @@ public class EntryController(IEntryDataProvider entryDataProviderService) : Cont
         }
     }
     
-    //POST: 新建/编辑词条
+    //POST: 新建词条
     [HttpPost]
     public async Task<ActionResult<Entry>> PostEntry([FromForm]EntryDto entryDto)
     {
@@ -89,7 +89,20 @@ public class EntryController(IEntryDataProvider entryDataProviderService) : Cont
         {
             return BadRequest(ex.Message);
         }
-       
+    }
+    
+    //PUT: 编辑词条
+    [HttpPut]
+    public async Task<IActionResult> UpdateEntry(EntryDto entryDto)
+    {
+        try
+        {
+            return Ok(await entryDataProviderService.UpdateEntry(entryDto));
+        }
+        catch (Exception ex)
+        {
+            return NotFound(ex.Message);
+        }
     }
     
     //DELETE: 删除词条
