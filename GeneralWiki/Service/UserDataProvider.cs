@@ -8,7 +8,8 @@ namespace GeneralWiki.Service;
 
 public class UserDataProvider(WikiContext cts): IUserDataProvider
 {
-    //1.µÇÂ¼ÓÃÓÊÏä£¬Æ¥ÅäÃÜÂëÊÇ·ñÏàµÈ
+
+    //1.ï¿½ï¿½Â¼ï¿½ï¿½ï¿½ï¿½ï¿½ä£¬Æ¥ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç·ï¿½ï¿½ï¿½ï¿½
     public async Task<string> LoginAsync(string email, string password)
     {
         var users = cts.Users.Where(u => u.Email == email);
@@ -26,9 +27,9 @@ public class UserDataProvider(WikiContext cts): IUserDataProvider
         return "Login success";
     }
 
-    //2.×¢²áÒ»¸öÐÂµÄÕËºÅ
-    //Ê×ÏÈÒª²éÕÒÓÊÏäÊÇ·ñÒÑ¾­×¢²á£¬ÊÇ¾ÍÒªÌáÊ¾ÎÞ·¨×¢²á
-    //»¹Òª²éÓÃ»§ÃûÊÇ·ñÒÑ¾­´æÔÚ£¬´æÔÚÎÞ·¨×¢²á
+    //2.×¢ï¿½ï¿½Ò»ï¿½ï¿½ï¿½Âµï¿½ï¿½Ëºï¿½
+    //ï¿½ï¿½ï¿½ï¿½Òªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç·ï¿½ï¿½Ñ¾ï¿½×¢ï¿½á£¬ï¿½Ç¾ï¿½Òªï¿½ï¿½Ê¾ï¿½Þ·ï¿½×¢ï¿½ï¿½
+    //ï¿½ï¿½Òªï¿½ï¿½ï¿½Ã»ï¿½ï¿½ï¿½ï¿½Ç·ï¿½ï¿½Ñ¾ï¿½ï¿½ï¿½ï¿½Ú£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Þ·ï¿½×¢ï¿½ï¿½
     public bool EmailExistOrDefault(string email) => cts.Users.Any(u => u.Email == email);
     public bool NameExistOrDefault(string name) => cts.Users.Any(u => u.Name == name);
     public async Task<string> SignupAsync(string name, string email, string password)
@@ -40,7 +41,7 @@ public class UserDataProvider(WikiContext cts): IUserDataProvider
         Startup.user.Name = name;
         Startup.user.Email = email;
         Startup.user.Password = password;
-        Startup.user.Role = Role.consumer; //×¢²áµÇÂ¼Ö®ºóÕâ¸öIdÕËºÅÈ¨ÏÞ´ÓÓÎ¿Í±ä³ÉÆÕÍ¨ÓÃ»§
+        Startup.user.Role = Role.consumer; //×¢ï¿½ï¿½ï¿½Â¼Ö®ï¿½ï¿½ï¿½ï¿½ï¿½Idï¿½Ëºï¿½È¨ï¿½Þ´ï¿½ï¿½Î¿Í±ï¿½ï¿½ï¿½ï¿½Í¨ï¿½Ã»ï¿½
 
         cts.Users.Add(Startup.user);
         await cts.SaveChangesAsync();
@@ -49,7 +50,7 @@ public class UserDataProvider(WikiContext cts): IUserDataProvider
         return "Signup success";
     }
 
-    //3.×¢ÏúÕËºÅ,ÓÎ¿Í×´Ì¬ÎÞ·¨×¢Ïú
+    //3.×¢ï¿½ï¿½ï¿½Ëºï¿½,ï¿½Î¿ï¿½×´Ì¬ï¿½Þ·ï¿½×¢ï¿½ï¿½
     public async Task<string> LogoutAsync()
     {
         if (Startup.user.Role is Role.tourist)
@@ -70,7 +71,7 @@ public class UserDataProvider(WikiContext cts): IUserDataProvider
         return "Logout success";
     }
 
-    //4.ÍË³öµÇÂ¼
+    //4.ï¿½Ë³ï¿½ï¿½ï¿½Â¼
     public async Task<string> QuitAsync()
     {
         if (Startup.user.Role is Role.tourist)
@@ -88,7 +89,7 @@ public class UserDataProvider(WikiContext cts): IUserDataProvider
         return "Quit success";
     }
 
-    //5.Í¨¹ýid²éÕÒÓÃ»§
+    //5.Í¨ï¿½ï¿½idï¿½ï¿½ï¿½ï¿½ï¿½Ã»ï¿½
     public async Task<User> IdSelectUserAsync(int id)
     {
         User? user = cts.Users.SingleOrDefault(x => x.Id == id);
@@ -96,7 +97,7 @@ public class UserDataProvider(WikiContext cts): IUserDataProvider
         return await Task.FromResult(user);
     }
 
-    //6.ÀûÓÃÓÃ»§Ãû²éÕÒÓÃ»§£¬²¢·µ»Ø¶à¸ö°üº¬²éÕÒ×Ö·û´®µÄÊý¾Ý£¬²¢½øÐÐÅÅÐò
+    //6.ï¿½ï¿½ï¿½ï¿½ï¿½Ã»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ã»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ø¶ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ý£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     public async Task<IQueryable<User>> NameSelectUsersAsync(string name)
     {
         var users = cts.Users.Where(x => x.Name != null && x.Name.Contains(name)).OrderBy(x => x.Name);
@@ -105,7 +106,7 @@ public class UserDataProvider(WikiContext cts): IUserDataProvider
         return await Task.FromResult(users);
     }
 
-    //7.ÓÃ»§¸ÄÃû
+    //7.ï¿½Ã»ï¿½ï¿½ï¿½ï¿½ï¿½
     public async Task<string> NameModifyAsync(string newName)
     {
         if (Startup.user.Role is Role.tourist)
@@ -122,15 +123,15 @@ public class UserDataProvider(WikiContext cts): IUserDataProvider
 
         if (userToUpdate is null)
         {
-            // ´¦ÀíÓÃ»§²»´æÔÚµÄÇé¿ö
+            // ï¿½ï¿½ï¿½ï¿½ï¿½Ã»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Úµï¿½ï¿½ï¿½ï¿½
             throw new Exception("The user is not existing");
         }
 
-        // ÐÞ¸ÄÓÃ»§ÊôÐÔ
+        // ï¿½Þ¸ï¿½ï¿½Ã»ï¿½ï¿½ï¿½ï¿½ï¿½
         userToUpdate.Name = newName;
         Startup.user.Name = newName;
 
-        // ±£´æ¸ü¸Ä
+        // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         await cts.SaveChangesAsync();
         await Task.Delay(1000);
 
@@ -157,5 +158,4 @@ public class UserDataProvider(WikiContext cts): IUserDataProvider
         await Task.Delay(1000);
         return "Already become author";
     }
-
 }

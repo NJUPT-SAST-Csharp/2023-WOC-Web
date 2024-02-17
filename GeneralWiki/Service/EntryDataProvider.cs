@@ -19,6 +19,7 @@ public class EntryDataProvider(WikiContext context):IEntryDataProvider
         if (entry == null) throw new Exception("There is no entry for this id");
         return new EntryDto
         {
+            Id=entry.EntryId,
             Title = entry.Title,
             Content = entry.Content,
             CategoryName = entry.Category!.CategoryName,
@@ -38,6 +39,7 @@ public class EntryDataProvider(WikiContext context):IEntryDataProvider
         if(entries.Count == 0) throw new Exception("There is no entry with this title");
         return entries.Select(e => new EntryDto
         {
+            Id=e.EntryId,
             Title = e.Title,
             Content = e.Content,
             CategoryName = e.Category!.CategoryName,
@@ -58,6 +60,7 @@ public class EntryDataProvider(WikiContext context):IEntryDataProvider
         if (entries.Count==0) throw new Exception("There is no entry under these tags");
         return entries.Select(entry => new EntryDto
         {
+            Id=entry.EntryId,
             Title = entry.Title,
             Content = entry.Content,
             CategoryName = entry.Category!.CategoryName,
@@ -83,6 +86,7 @@ public class EntryDataProvider(WikiContext context):IEntryDataProvider
         if (entries.Count==0) throw new Exception("There are no entries under this category");
         return entries.Select(entry => new EntryDto
         {
+            Id=entry.EntryId,
             Title = entry.Title,
             Content = entry.Content,
             CategoryName = entry.Category!.CategoryName,
@@ -100,25 +104,26 @@ public class EntryDataProvider(WikiContext context):IEntryDataProvider
         if(entries==null)throw new Exception("No entry!");
         return entries.Select(entry => new EntryDto
         {
+            Id=entry.EntryId,
             Title = entry.Title,
-            Content = entry.Content,
+            Content = "",
             CategoryName = entry.Category!.CategoryName,
             TagNames = entry.GetTagNames().ToList()
         }).ToList();
     }
     
-    //POST: 新建/编辑词条
-    public async Task<string> PostEntry(EntryDto entryDto)
+    //POST: 新建词条
+    public async Task<int?> PostEntry(EntryDto entryDto)
     {
         //检查是否有已存在的词条
         var previousEntry = await context.Entries.FirstOrDefaultAsync(e => e.Title == entryDto.Title);
         
-        //有，就删掉（覆盖）
-        if (previousEntry != null) context.Entries.Remove(previousEntry);
+        if (previousEntry != null) throw new Exception("The entry has already exist!");
         
         var tagsInDto = entryDto.TagNames;//取出请求体中的Tag列表
         var entry = new Entry
         {
+            EntryId=null,
             Title = entryDto.Title,
             Content = entryDto.Content,
             Category = await GetOrCreateCategory(entryDto.CategoryName)
@@ -150,7 +155,46 @@ public class EntryDataProvider(WikiContext context):IEntryDataProvider
         }
         await context.Entries.AddAsync(entry);
         await context.SaveChangesAsync();
-        return "Post success!";
+        return entry.EntryId;
+    }
+
+    //PUT: 编辑词条
+    public async Task<string> UpdateEntry(EntryDto entryDto)
+    {
+        var previousEntry = await context.Entries.FirstOrDefaultAsync(e => e.EntryId == entryDto.Id);
+        if (previousEntry == null) throw new Exception("The Entry isn't exist!");
+        context.Entries.Remove(previousEntry);
+        var tagsInDto = entryDto.TagNames;
+        var entry = new Entry
+        {
+            Title = entryDto.Title,
+            Content = entryDto.Content,
+            Category = await GetOrCreateCategory(entryDto.CategoryName)
+        };
+        var existingTags = await context.Tags
+            .Where(tagInDataBase => tagsInDto.Contains(tagInDataBase.TagName))
+            .ToListAsync(); 
+        foreach (var tagInDto in tagsInDto)
+        {
+            var existingTag = existingTags.FirstOrDefault(tag => tag.TagName == tagInDto);
+            var newTag = new Tag
+            {
+                TagName = tagInDto
+            };
+            if (existingTag == null)
+            {
+                entry.Tags.Add(newTag);
+                newTag.Entries?.Add(entry);
+            }
+            else
+            {
+                entry.Tags.Add(existingTag);
+                existingTag.Entries?.Add(entry);
+            }
+        }
+        await context.Entries.AddAsync(entry);
+        await context.SaveChangesAsync();
+        return "Update success!";
     }
     
     //DELETE：删除词条

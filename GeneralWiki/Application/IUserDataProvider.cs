@@ -32,6 +32,5 @@ public interface IUserDataProvider
     //Post:设置创作者
     public Task<string> SetAuthorAsync(int id);
     
-    
+  
 }
-//async和http动词不放在接口中

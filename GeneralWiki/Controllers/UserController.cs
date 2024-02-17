@@ -6,10 +6,9 @@ using Microsoft.AspNetCore.Mvc;
 namespace GeneralWiki.Controllers;
 [Route("api/[controller]/[action]")]
 [ApiController]
-
 public class UserController(IUserDataProvider userDataProvider) : ControllerBase
 {
-    //1.µÇÂ¼
+    //1.ï¿½ï¿½Â¼
     [HttpPost]
     public async Task<ActionResult<string>> LoginAsync(string email, string password)
     {
@@ -22,7 +21,7 @@ public class UserController(IUserDataProvider userDataProvider) : ControllerBase
         }
     }
 
-    //2.×¢²á
+    //2.×¢ï¿½ï¿½
     [HttpPost]
     public async Task<ActionResult<string>> SignupAsync(string name, string email, string password)
     {
@@ -36,7 +35,7 @@ public class UserController(IUserDataProvider userDataProvider) : ControllerBase
         }
     }
 
-    //3.ÍË³öµÇÂ¼
+    //3.ï¿½Ë³ï¿½ï¿½ï¿½Â¼
     [HttpPost]
     public async Task<ActionResult<string>> QuitAsync()
     {
@@ -50,7 +49,7 @@ public class UserController(IUserDataProvider userDataProvider) : ControllerBase
         }
     }
 
-    //4.×¢ÏúÕËºÅ
+    //4.×¢ï¿½ï¿½ï¿½Ëºï¿½
     [HttpDelete]
     public async Task<ActionResult<string>> LogoutAsync()
     {
@@ -64,7 +63,7 @@ public class UserController(IUserDataProvider userDataProvider) : ControllerBase
         }
     }
 
-    //5.ÀûÓÃid²éÕÒÓÃ»§
+    //5.ï¿½ï¿½ï¿½ï¿½idï¿½ï¿½ï¿½ï¿½ï¿½Ã»ï¿½
     [HttpGet]
     public async Task<ActionResult<User>> IdSelectUserAsync(int id)
     {
@@ -78,7 +77,7 @@ public class UserController(IUserDataProvider userDataProvider) : ControllerBase
         }
     }
 
-    //6.Í¨¹ýÓÃ»§Ãû²éÕÒÓÃ»§
+    //6.Í¨ï¿½ï¿½ï¿½Ã»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ã»ï¿½
     [HttpGet]
     public async Task<ActionResult<IQueryable<User>>> NameSelectUsersAsync(string name)
     {
@@ -92,7 +91,7 @@ public class UserController(IUserDataProvider userDataProvider) : ControllerBase
         }
     }
 
-    //7.ÐÞ¸ÄÓÃ»§Ãû
+    //7.ï¿½Þ¸ï¿½ï¿½Ã»ï¿½ï¿½ï¿½
     [HttpPost]
     public async Task<ActionResult<string>> NameModifyAsync(string newName)
     {
@@ -106,7 +105,7 @@ public class UserController(IUserDataProvider userDataProvider) : ControllerBase
         }
     }
 
-    //8.ÉèÖÃÎª¹ÜÀíÔ±
+    //8.ï¿½ï¿½ï¿½ï¿½Îªï¿½ï¿½ï¿½ï¿½Ô±
     [HttpPost]
     public async Task<ActionResult<string>> SetAdminAsync(int id)
     {
@@ -125,7 +124,7 @@ public class UserController(IUserDataProvider userDataProvider) : ControllerBase
         }
     }
 
-    //9.ÉèÖÃÎª´´×÷Õß
+    //9.ï¿½ï¿½ï¿½ï¿½Îªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     [HttpPost]
     public async Task<ActionResult<string>> SetAuthorAsync(int id)
     {
@@ -143,5 +142,4 @@ public class UserController(IUserDataProvider userDataProvider) : ControllerBase
             return BadRequest(ex.Message);
         }
     }
-
 }
