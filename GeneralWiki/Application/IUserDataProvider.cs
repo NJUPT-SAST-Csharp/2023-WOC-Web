@@ -25,6 +25,7 @@ public interface IUserDataProvider
 
     //Post:修改自己的用户名
     public Task<string> NameModifyAsync(string newName);
+
     //Post:设置管理员
     public Task<string> SetAdminAsync(int id);
 

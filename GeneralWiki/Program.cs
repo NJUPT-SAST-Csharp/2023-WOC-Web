@@ -16,7 +16,7 @@ builder.Services.AddControllers();
 
 builder.Services.AddDbContext<WikiContext>();
 
-builder.Services.AddScoped<UserDataProvider>();
+builder.Services.AddScoped<IUserDataProvider,UserDataProvider>();
 builder.Services.AddScoped<IEntryDataProvider, EntryDataProvider>();
 
 var app = builder.Build();
