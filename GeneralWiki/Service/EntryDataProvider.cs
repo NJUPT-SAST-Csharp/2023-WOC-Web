@@ -19,6 +19,7 @@ public class EntryDataProvider(WikiContext context):IEntryDataProvider
         if (entry == null) throw new Exception("There is no entry for this id");
         return new EntryDto
         {
+            Id=entry.EntryId,
             Title = entry.Title,
             Content = entry.Content,
             CategoryName = entry.Category!.CategoryName,
@@ -38,6 +39,7 @@ public class EntryDataProvider(WikiContext context):IEntryDataProvider
         if(entries.Count == 0) throw new Exception("There is no entry with this title");
         return entries.Select(e => new EntryDto
         {
+            Id=e.EntryId,
             Title = e.Title,
             Content = e.Content,
             CategoryName = e.Category!.CategoryName,
@@ -58,6 +60,7 @@ public class EntryDataProvider(WikiContext context):IEntryDataProvider
         if (entries.Count==0) throw new Exception("There is no entry under these tags");
         return entries.Select(entry => new EntryDto
         {
+            Id=entry.EntryId,
             Title = entry.Title,
             Content = entry.Content,
             CategoryName = entry.Category!.CategoryName,
@@ -83,6 +86,7 @@ public class EntryDataProvider(WikiContext context):IEntryDataProvider
         if (entries.Count==0) throw new Exception("There are no entries under this category");
         return entries.Select(entry => new EntryDto
         {
+            Id=entry.EntryId,
             Title = entry.Title,
             Content = entry.Content,
             CategoryName = entry.Category!.CategoryName,
@@ -100,8 +104,9 @@ public class EntryDataProvider(WikiContext context):IEntryDataProvider
         if(entries==null)throw new Exception("No entry!");
         return entries.Select(entry => new EntryDto
         {
+            Id=entry.EntryId,
             Title = entry.Title,
-            Content = entry.Content,
+            Content = "",
             CategoryName = entry.Category!.CategoryName,
             TagNames = entry.GetTagNames().ToList()
         }).ToList();
@@ -111,7 +116,7 @@ public class EntryDataProvider(WikiContext context):IEntryDataProvider
     public async Task<string> PostEntry(EntryDto entryDto)
     {
         //检查是否有已存在的词条
-        var previousEntry = await context.Entries.FirstOrDefaultAsync(e => e.Title == entryDto.Title);
+        var previousEntry = await context.Entries.FirstOrDefaultAsync(e => e.EntryId == entryDto.Id);
         
         //有，就删掉（覆盖）
         if (previousEntry != null) context.Entries.Remove(previousEntry);
