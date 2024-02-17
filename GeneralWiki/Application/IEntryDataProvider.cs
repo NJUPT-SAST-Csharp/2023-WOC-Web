@@ -1,4 +1,3 @@
-using GeneralWiki.Models;
 using GeneralWiki.Service.DtoService;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,6 +10,7 @@ public interface IEntryDataProvider
     public Task<ICollection<EntryDto>> GetEntriesByTags([FromQuery] List<string>? tagNames);
     public Task<ICollection<EntryDto>> GetEntriesByCategory(string categoryName);
     public Task<IEnumerable<EntryDto>> GetEntries();
-    public Task<string> PostEntry(EntryDto entryDto);
+    public Task<int?> PostEntry(EntryDto entryDto);
+    public Task<string> UpdateEntry(EntryDto entryDto);
     public Task<string> DeleteEntry(string title);
 }

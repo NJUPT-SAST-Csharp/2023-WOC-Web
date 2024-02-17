@@ -2,11 +2,7 @@ using GeneralWiki.Application;
 
 namespace GeneralWiki.Controllers;
 
-public class UserController
+public class UserController(IUserDataProvider userDataProvider)
 {
-    private readonly IUserDataProvider _userDataProvider;
-
-    public UserController(IUserDataProvider userDataProvider)
-    {
-        _userDataProvider = userDataProvider;
-    }}
+    private readonly IUserDataProvider _userDataProvider = userDataProvider;
+}
