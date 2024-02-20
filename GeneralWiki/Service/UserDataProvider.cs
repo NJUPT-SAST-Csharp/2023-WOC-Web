@@ -1,4 +1,4 @@
-using GeneralWiki.Application;
+﻿using GeneralWiki.Application;
 using GeneralWiki.Data;
 using GeneralWiki.Models;
 using Microsoft.AspNetCore.Hosting;
@@ -9,7 +9,6 @@ namespace GeneralWiki.Service;
 public class UserDataProvider(WikiContext cts): IUserDataProvider
 {
 
-    //1.��¼�����䣬ƥ�������Ƿ����
     public async Task<string> LoginAsync(string email, string password)
     {
         var users = cts.Users.Where(u => u.Email == email);
@@ -27,9 +26,6 @@ public class UserDataProvider(WikiContext cts): IUserDataProvider
         return "Login success";
     }
 
-    //2.ע��һ���µ��˺�
-    //����Ҫ���������Ƿ��Ѿ�ע�ᣬ�Ǿ�Ҫ��ʾ�޷�ע��
-    //��Ҫ���û����Ƿ��Ѿ����ڣ������޷�ע��
     public bool EmailExistOrDefault(string email) => cts.Users.Any(u => u.Email == email);
     public bool NameExistOrDefault(string name) => cts.Users.Any(u => u.Name == name);
     public async Task<string> SignupAsync(string name, string email, string password)
@@ -41,7 +37,7 @@ public class UserDataProvider(WikiContext cts): IUserDataProvider
         Startup.user.Name = name;
         Startup.user.Email = email;
         Startup.user.Password = password;
-        Startup.user.Role = Role.consumer; //ע���¼֮�����Id�˺�Ȩ�޴��οͱ����ͨ�û�
+        Startup.user.Role = Role.consumer; 
 
         cts.Users.Add(Startup.user);
         await cts.SaveChangesAsync();
@@ -50,7 +46,6 @@ public class UserDataProvider(WikiContext cts): IUserDataProvider
         return "Signup success";
     }
 
-    //3.ע���˺�,�ο�״̬�޷�ע��
     public async Task<string> LogoutAsync()
     {
         if (Startup.user.Role is Role.tourist)
@@ -71,7 +66,6 @@ public class UserDataProvider(WikiContext cts): IUserDataProvider
         return "Logout success";
     }
 
-    //4.�˳���¼
     public async Task<string> QuitAsync()
     {
         if (Startup.user.Role is Role.tourist)
@@ -89,7 +83,6 @@ public class UserDataProvider(WikiContext cts): IUserDataProvider
         return "Quit success";
     }
 
-    //5.ͨ��id�����û�
     public async Task<User> IdSelectUserAsync(int id)
     {
         User? user = cts.Users.SingleOrDefault(x => x.Id == id);
@@ -97,7 +90,6 @@ public class UserDataProvider(WikiContext cts): IUserDataProvider
         return await Task.FromResult(user);
     }
 
-    //6.�����û��������û��������ض�����������ַ��������ݣ�����������
     public async Task<IQueryable<User>> NameSelectUsersAsync(string name)
     {
         var users = cts.Users.Where(x => x.Name != null && x.Name.Contains(name)).OrderBy(x => x.Name);
@@ -106,7 +98,6 @@ public class UserDataProvider(WikiContext cts): IUserDataProvider
         return await Task.FromResult(users);
     }
 
-    //7.�û�����
     public async Task<string> NameModifyAsync(string newName)
     {
         if (Startup.user.Role is Role.tourist)
@@ -123,15 +114,12 @@ public class UserDataProvider(WikiContext cts): IUserDataProvider
 
         if (userToUpdate is null)
         {
-            // �����û������ڵ����
             throw new Exception("The user is not existing");
         }
 
-        // �޸��û�����
         userToUpdate.Name = newName;
         Startup.user.Name = newName;
 
-        // �������
         await cts.SaveChangesAsync();
         await Task.Delay(1000);
 
