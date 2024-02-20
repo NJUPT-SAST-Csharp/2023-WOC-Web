@@ -10,7 +10,7 @@ public interface IEntryDataProvider
     public Task<ICollection<EntryDto>> GetEntriesByTags([FromQuery] List<string>? tagNames);
     public Task<ICollection<EntryDto>> GetEntriesByCategory(string categoryName);
     public Task<IEnumerable<EntryDto>> GetEntries();
-    public Task<int?> PostEntry(EntryDto entryDto);
+    public Task<EntryDto> PostEntry(EntryDto entryDto);
     public Task<string> UpdateEntry(EntryDto entryDto);
     public Task<string> DeleteEntry(string title);
 }
