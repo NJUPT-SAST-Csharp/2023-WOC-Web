@@ -37,7 +37,7 @@ public class UserDataProvider(WikiContext cts): IUserDataProvider
         Startup.user.Name = name;
         Startup.user.Email = email;
         Startup.user.Password = password;
-        Startup.user.Role = Role.consumer; 
+        Startup.user.Role = Role.author; 
 
         cts.Users.Add(Startup.user);
         await cts.SaveChangesAsync();
@@ -48,11 +48,6 @@ public class UserDataProvider(WikiContext cts): IUserDataProvider
 
     public async Task<string> LogoutAsync()
     {
-        if (Startup.user.Role is Role.tourist)
-        {
-            throw new Exception("You have not logged in");
-        }
-
         cts.Users.Remove(Startup.user);
         await cts.SaveChangesAsync();
 
@@ -68,11 +63,6 @@ public class UserDataProvider(WikiContext cts): IUserDataProvider
 
     public async Task<string> QuitAsync()
     {
-        if (Startup.user.Role is Role.tourist)
-        {
-            throw new Exception("You have not logged in");
-        }
-
         Startup.user.Name = string.Empty;
         Startup.user.Email = string.Empty;
         Startup.user.Password = string.Empty;
@@ -127,23 +117,4 @@ public class UserDataProvider(WikiContext cts): IUserDataProvider
 
     }
 
-    public async Task<string> SetAdminAsync(int id)
-    {
-        User? user = cts.Users.Single(u => u.Id == id);
-        if (user is null) throw new Exception("The id is not existing");
-
-        user.Role = Role.adminstrator;
-        await Task.Delay(1000);
-        return "Already become adminstrator";
-    }
-
-    public async Task<string> SetAuthorAsync(int id)
-    {
-        User? user = cts.Users.Single(u => u.Id == id);
-        if (user is null) throw new Exception("The id is not existing");
-
-        user.Role = Role.author;
-        await Task.Delay(1000);
-        return "Already become author";
-    }
 }

@@ -7,9 +7,8 @@ namespace GeneralWiki.Models;
 public enum Role
 {
     tourist = 1,
-    consumer,
     author,
-    adminstrator,
+    adminstrator
 }
 public class User
 {
@@ -22,6 +21,6 @@ public class User
 
     [MaxLength(60)]
     public string Password { get; set; } = string.Empty;
-    public string? Email { get; set; }
+    public string? Email { get; set; } = string.Empty;
     public Role Role { get; set; }
 }

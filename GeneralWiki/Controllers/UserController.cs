@@ -8,20 +8,21 @@ namespace GeneralWiki.Controllers;
 [ApiController]
 public class UserController(IUserDataProvider userDataProvider) : ControllerBase
 {
-    //1.��¼
+    //Post:登录
     [HttpPost]
     public async Task<ActionResult<string>> LoginAsync(string email, string password)
     {
         try
         {
             return Ok(await userDataProvider.LoginAsync(email, password));
-        }catch(Exception ex)
+        }
+        catch (Exception ex)
         {
             return BadRequest(ex.Message);
         }
     }
 
-    //2.ע��
+    //Post:注册
     [HttpPost]
     public async Task<ActionResult<string>> SignupAsync(string name, string email, string password)
     {
@@ -35,10 +36,13 @@ public class UserController(IUserDataProvider userDataProvider) : ControllerBase
         }
     }
 
-    //3.�˳���¼
+    //Post:退出登录
     [HttpPost]
     public async Task<ActionResult<string>> QuitAsync()
     {
+        var staff = Startup.user.Role;
+        if (staff is Role.tourist) return Unauthorized("Only administrators have permission to quit");
+
         try
         {
             return Ok(await userDataProvider.QuitAsync());
@@ -49,10 +53,12 @@ public class UserController(IUserDataProvider userDataProvider) : ControllerBase
         }
     }
 
-    //4.ע���˺�
+    //Delete:注销账号
     [HttpDelete]
     public async Task<ActionResult<string>> LogoutAsync()
     {
+        var staff = Startup.user.Role;
+        if (staff is Role.tourist) return Unauthorized("Only administrators have permission to log out");
         try
         {
             return Ok(await userDataProvider.LogoutAsync());
@@ -63,7 +69,7 @@ public class UserController(IUserDataProvider userDataProvider) : ControllerBase
         }
     }
 
-    //5.����id�����û�
+    //Get:Id查找用户
     [HttpGet]
     public async Task<ActionResult<User>> IdSelectUserAsync(int id)
     {
@@ -73,11 +79,11 @@ public class UserController(IUserDataProvider userDataProvider) : ControllerBase
         }
         catch (Exception ex)
         {
-            return BadRequest(ex.Message);
+            return NotFound(ex.Message);
         }
     }
 
-    //6.ͨ���û��������û�
+    //Get:Name查找用户
     [HttpGet]
     public async Task<ActionResult<IQueryable<User>>> NameSelectUsersAsync(string name)
     {
@@ -87,14 +93,17 @@ public class UserController(IUserDataProvider userDataProvider) : ControllerBase
         }
         catch (Exception ex)
         {
-            return BadRequest(ex.Message);
+            return NotFound(ex.Message);
         }
     }
 
-    //7.�޸��û���
+    //Post:修改自己的用户名
     [HttpPost]
     public async Task<ActionResult<string>> NameModifyAsync(string newName)
     {
+        var staff = Startup.user.Role;
+        if (staff is Role.tourist) return Unauthorized("Only administrators have permission to modify name");
+
         try
         {
             return Ok(await userDataProvider.NameModifyAsync(newName));
@@ -105,41 +114,4 @@ public class UserController(IUserDataProvider userDataProvider) : ControllerBase
         }
     }
 
-    //8.����Ϊ����Ա
-    [HttpPost]
-    public async Task<ActionResult<string>> SetAdminAsync(int id)
-    {
-        if (Startup.user.Role is not Role.adminstrator)
-        {
-            return Unauthorized("Only administrators have permission to delete entries");
-        }
-
-        try 
-        {
-            return Ok(await userDataProvider.SetAdminAsync(id));
-        }
-        catch (Exception ex)
-        {
-            return BadRequest(ex.Message);
-        }
-    }
-
-    //9.����Ϊ������
-    [HttpPost]
-    public async Task<ActionResult<string>> SetAuthorAsync(int id)
-    {
-        if (Startup.user.Role is not Role.adminstrator)
-        {
-            return Unauthorized("Only administrators have permission to delete entries");
-        }
-
-        try
-        {
-            return Ok(await userDataProvider.SetAuthorAsync(id));
-        }
-        catch (Exception ex)
-        {
-            return BadRequest(ex.Message);
-        }
-    }
 }
