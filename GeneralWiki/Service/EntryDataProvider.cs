@@ -113,7 +113,7 @@ public class EntryDataProvider(WikiContext context):IEntryDataProvider
     }
     
     //POST: 新建词条
-    public async Task<int?> PostEntry(EntryDto entryDto)
+    public async Task<EntryDto> PostEntry(EntryDto entryDto)
     {
         //检查是否有已存在的词条
         var previousEntry = await context.Entries.FirstOrDefaultAsync(e => e.Title == entryDto.Title);
@@ -155,7 +155,11 @@ public class EntryDataProvider(WikiContext context):IEntryDataProvider
         }
         await context.Entries.AddAsync(entry);
         await context.SaveChangesAsync();
-        return entry.EntryId;
+        return new EntryDto
+        {
+            Id=entry.EntryId,
+            Title = entry.Title
+        };
     }
 
     //PUT: 编辑词条
