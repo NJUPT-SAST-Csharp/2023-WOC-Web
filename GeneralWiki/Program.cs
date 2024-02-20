@@ -18,6 +18,7 @@ builder.Services.AddDbContext<WikiContext>();
 
 builder.Services.AddScoped<IUserDataProvider,UserDataProvider>();
 builder.Services.AddScoped<IEntryDataProvider, EntryDataProvider>();
+builder.Services.AddScoped<IPictureProvider,PictureProvider>();
 
 var app = builder.Build();
 
