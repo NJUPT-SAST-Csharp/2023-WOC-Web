@@ -5,13 +5,32 @@ namespace GeneralWiki.Application;
 
 public interface IUserDataProvider
 {
+
+    public Task<string> LoginAsync(string email, string password);
+
     //Post:注册
-    public Task<ActionResult<User>> Register(User user);
+    public Task<string> SignupAsync(string name, string email, string password);
+
+    //Post:退出登录
+    public Task<string> QuitAsync();
+
+    //Delete:注销账号
+    public Task<string> LogoutAsync();
+
+    //Get:Id查找用户
+    public Task<User> IdSelectUserAsync(int id);
     
+    //Get:Name查找用户
+    public Task<IQueryable<User>> NameSelectUsersAsync(string name);
+
+    //Post:修改自己的用户名
+    public Task<string> NameModifyAsync(string newName);
+
     //Post:设置管理员
-    public Task<ActionResult> SetAdmin(int id);
+    public Task<string> SetAdminAsync(int id);
+
+    //Post:设置创作者
+    public Task<string> SetAuthorAsync(int id);
     
-    //Post:登录
-    public Task<ActionResult<User>> Login(User user);
+  
 }
-//async和http动词不放在接口中

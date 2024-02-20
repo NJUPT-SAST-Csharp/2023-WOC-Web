@@ -1,22 +1,16 @@
-using GeneralWiki.Models;
+using GeneralWiki.Service.DtoService;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GeneralWiki.Application;
 
 public interface IEntryDataProvider
 {
-    // GET: 展示单个词条
-    public Task<ActionResult<Entry>> GetEntry(int id);
-    
-    // PUT: 编辑词条
-    public Task<IActionResult> PutEntry(int id, Entry entry);
-    
-    // DELETE: 删除词条
-    public Task<IActionResult> DeleteEntry(int id);
-    
-    // GET: 展示所有词条
-    public Task<ActionResult<IEnumerable<Entry>>>GetEntries();
-    
-    // POST: 新建词条
-    public Task<ActionResult<Entry>> PostEntry([FromForm] Entry entry, IFormFile file);
+    public Task<EntryDto> GetEntryById(int id);
+    public Task<List<EntryDto>> GetEntryByTitle(string title);
+    public Task<ICollection<EntryDto>> GetEntriesByTags([FromQuery] List<string>? tagNames);
+    public Task<ICollection<EntryDto>> GetEntriesByCategory(string categoryName);
+    public Task<IEnumerable<EntryDto>> GetEntries();
+    public Task<int?> PostEntry(EntryDto entryDto);
+    public Task<string> UpdateEntry(EntryDto entryDto);
+    public Task<string> DeleteEntry(string title);
 }
