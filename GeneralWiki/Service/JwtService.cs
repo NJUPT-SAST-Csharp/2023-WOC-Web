@@ -10,17 +10,17 @@ namespace GeneralWiki.Service
     public class JwtService
     {
 
-        //²úÉúToken
+        //äº§ç”ŸToken
         public static string GenerateToken(User user, string secretKey)
         {
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey));
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(GenerateSecretKey()));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
             var claims = new[]
             {
             new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
             new Claim(ClaimTypes.Email, user.Email),
-            // ¿ÉÒÔÌí¼Ó¸ü¶àµÄÉùÃ÷
+            // å¯ä»¥æ·»åŠ æ›´å¤šçš„å£°æ˜
         };
 
             var token = new JwtSecurityToken(
@@ -33,19 +33,11 @@ namespace GeneralWiki.Service
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
-        //²úÉúsecretKey
+        //äº§ç”ŸsecretKey
         public static string GenerateSecretKey(int length = 32)
-        {
-            byte[] randomBytes = new byte[length];
-            using(var rng = RandomNumberGenerator.Create())
-            {
-                rng.GetBytes(randomBytes);
-            }
+            => "è¿™é‡Œæ˜¯ä¸€ä¸ªéå¸¸å®‰å…¨çš„å¯†é’¥";
 
-            return Convert.ToBase64String(randomBytes);
-        }
-
-        //È·ÈÏToken,Í¬Ê±½âÎöToken
+        //ç¡®è®¤Token,åŒæ—¶è§£æToken
         public static ClaimsPrincipal ValidateToken(string token)
         {
             var tokenHandler = new JwtSecurityTokenHandler();

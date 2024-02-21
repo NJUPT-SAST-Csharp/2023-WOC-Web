@@ -9,8 +9,8 @@ using System.Text;
 
 
 var builder = WebApplication.CreateBuilder(args);
-// JWT配置
-var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("这里是一个非常安全的密钥"));//JWT密钥
+// JWT閰嶇疆
+var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("杩欓噷鏄竴涓潪甯稿畨鍏ㄧ殑瀵嗛挜"));//JWT瀵嗛挜
 var tokenValidationParameters = new TokenValidationParameters
 {
     ValidateIssuerSigningKey = true,
