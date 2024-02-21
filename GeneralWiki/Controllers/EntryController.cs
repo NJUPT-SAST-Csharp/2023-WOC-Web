@@ -92,9 +92,12 @@ public class EntryController(IEntryDataProvider entryDataProviderService) : Cont
     }
     
     //PUT: 编辑词条
+    [Authorize]
     [HttpPut]
     public async Task<IActionResult> UpdateEntry(EntryDto entryDto)
     {
+        var staff = User.FindFirstValue(ClaimTypes.Role);
+        if (staff is not "Author") return Unauthorized("Only administrators have permission to delete entries");
         try
         {
             return Ok(await entryDataProviderService.UpdateEntry(entryDto));

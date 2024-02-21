@@ -1,6 +1,7 @@
 using GeneralWiki.Data.DataBaseConfiguration;
 using GeneralWiki.Models;
 using Microsoft.EntityFrameworkCore;
+// using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace GeneralWiki.Data;
 
@@ -14,7 +15,7 @@ public class WikiContext(DbContextOptions<WikiContext> options) : DbContext(opti
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        base.OnModelCreating(modelBuilder);// ȷ�����ȵ��û����OnModelCreating
         modelBuilder.ApplyConfiguration(new EntryConfig());
-        base.OnModelCreating(modelBuilder);
     }
 }
