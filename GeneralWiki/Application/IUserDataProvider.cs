@@ -5,7 +5,7 @@ namespace GeneralWiki.Application;
 
 public interface IUserDataProvider
 {
-
+    //Post:登录
     public Task<string> LoginAsync(string email, string password);
 
     //Post:注册
@@ -26,11 +26,4 @@ public interface IUserDataProvider
     //Post:修改自己的用户名
     public Task<string> NameModifyAsync(string newName);
 
-    //Post:设置管理员
-    public Task<string> SetAdminAsync(int id);
-
-    //Post:设置创作者
-    public Task<string> SetAuthorAsync(int id);
-    
-  
 }

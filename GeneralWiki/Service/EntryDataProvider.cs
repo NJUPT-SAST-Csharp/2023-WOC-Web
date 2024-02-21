@@ -4,6 +4,7 @@ using GeneralWiki.Models;
 using GeneralWiki.Service.DtoService;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Npgsql.EntityFrameworkCore.PostgreSQL;
 
 namespace GeneralWiki.Service;
 

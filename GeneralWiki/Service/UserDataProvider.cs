@@ -22,8 +22,9 @@ public class UserDataProvider(WikiContext cts): IUserDataProvider
         Startup.user = users.Single();
         await Task.Delay(1000);
 
+        var token = JwtService.GenerateToken(Startup.user, JwtService.GenerateSecretKey());
        
-        return "Login success";
+        return token;
     }
 
     public bool EmailExistOrDefault(string email) => cts.Users.Any(u => u.Email == email);
@@ -37,7 +38,7 @@ public class UserDataProvider(WikiContext cts): IUserDataProvider
         Startup.user.Name = name;
         Startup.user.Email = email;
         Startup.user.Password = password;
-        Startup.user.Role = Role.consumer; 
+        Startup.user.Role = Role.author; 
 
         cts.Users.Add(Startup.user);
         await cts.SaveChangesAsync();
@@ -48,11 +49,6 @@ public class UserDataProvider(WikiContext cts): IUserDataProvider
 
     public async Task<string> LogoutAsync()
     {
-        if (Startup.user.Role is Role.tourist)
-        {
-            throw new Exception("You have not logged in");
-        }
-
         cts.Users.Remove(Startup.user);
         await cts.SaveChangesAsync();
 
@@ -63,16 +59,13 @@ public class UserDataProvider(WikiContext cts): IUserDataProvider
 
         await Task.Delay(1000);
 
-        return "Logout success";
+        var token = JwtService.GenerateToken(Startup.user, JwtService.GenerateSecretKey());
+
+        return token;
     }
 
     public async Task<string> QuitAsync()
     {
-        if (Startup.user.Role is Role.tourist)
-        {
-            throw new Exception("You have not logged in");
-        }
-
         Startup.user.Name = string.Empty;
         Startup.user.Email = string.Empty;
         Startup.user.Password = string.Empty;
@@ -123,10 +116,12 @@ public class UserDataProvider(WikiContext cts): IUserDataProvider
         await cts.SaveChangesAsync();
         await Task.Delay(1000);
 
-        return "Modify success";
+        var token = JwtService.GenerateToken(userToUpdate, JwtService.GenerateSecretKey());
+
+        return token;
 
     }
-
+    
     public async Task<string> SetAdminAsync(int id)
     {
         User? user = cts.Users.Single(u => u.Id == id);
