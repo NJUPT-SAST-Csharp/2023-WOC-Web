@@ -95,7 +95,6 @@ public class EntryController(IEntryDataProvider entryDataProviderService) : Cont
     }
 
     //PUT: 编辑词条
-    [Authorize]
     [HttpPut]
     [Authorize]
     public async Task<IActionResult> UpdateEntry(EntryDto entryDto)

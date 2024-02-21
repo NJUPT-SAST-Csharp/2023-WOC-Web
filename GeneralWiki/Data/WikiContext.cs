@@ -15,7 +15,7 @@ public class WikiContext(DbContextOptions<WikiContext> options) : DbContext(opti
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        base.OnModelCreating(modelBuilder);// ȷ�����ȵ��û����OnModelCreating
+        base.OnModelCreating(modelBuilder);
         modelBuilder.ApplyConfiguration(new EntryConfig());
     }
 }
