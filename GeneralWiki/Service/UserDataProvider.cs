@@ -121,5 +121,24 @@ public class UserDataProvider(WikiContext cts): IUserDataProvider
         return token;
 
     }
+    
+    public async Task<string> SetAdminAsync(int id)
+    {
+        User? user = cts.Users.Single(u => u.Id == id);
+        if (user is null) throw new Exception("The id is not existing");
 
+        user.Role = Role.adminstrator;
+        await Task.Delay(1000);
+        return "Already become administrator";
+    }
+
+    public async Task<string> SetAuthorAsync(int id)
+    {
+        User? user = cts.Users.Single(u => u.Id == id);
+        if (user is null) throw new Exception("The id is not existing");
+
+        user.Role = Role.author;
+        await Task.Delay(1000);
+        return "Already become author";
+    }
 }

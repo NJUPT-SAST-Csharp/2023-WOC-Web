@@ -100,7 +100,9 @@ public class EntryController(IEntryDataProvider entryDataProviderService) : Cont
     public async Task<IActionResult> UpdateEntry(EntryDto entryDto)
     {
         var staff = User.FindFirstValue(ClaimTypes.Role);
+
         if (staff is "tourist") return Unauthorized("Only administrators or authors have permission to update entries");
+
         try
         {
             return Ok(await entryDataProviderService.UpdateEntry(entryDto));

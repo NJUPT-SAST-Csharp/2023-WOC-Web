@@ -1,15 +1,12 @@
 using GeneralWiki.Data.DataBaseConfiguration;
 using GeneralWiki.Models;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+// using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace GeneralWiki.Data;
 
-public class WikiContext : IdentityDbContext
+public class WikiContext(DbContextOptions<WikiContext> options) : DbContext(options)
 {
-    public WikiContext(DbContextOptions<WikiContext> options) : base(options)
-    {
-    }
     public DbSet<Entry> Entries { get; set; }
     public DbSet<Tag> Tags { get; set; }
     public DbSet<Category> Categories { get; set; }
@@ -18,7 +15,7 @@ public class WikiContext : IdentityDbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        base.OnModelCreating(modelBuilder);// 确保首先调用基类的OnModelCreating
+        base.OnModelCreating(modelBuilder);
         modelBuilder.ApplyConfiguration(new EntryConfig());
     }
 }
