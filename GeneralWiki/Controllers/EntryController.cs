@@ -80,7 +80,7 @@ public class EntryController(IEntryDataProvider entryDataProviderService) : Cont
     //POST: 新建词条
     [HttpPost]
     [Authorize]
-    public async Task<ActionResult<Entry>> PostEntry([FromForm] EntryDto entryDto)
+    public async Task<ActionResult<Entry>> PostEntry(EntryDto entryDto)
     {
         var staff = User.FindFirstValue(ClaimTypes.Role);
         if (staff is "tourist") return Unauthorized("Only administrators or authors have permission to post entries");
