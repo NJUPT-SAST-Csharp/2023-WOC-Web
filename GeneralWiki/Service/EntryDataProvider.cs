@@ -4,7 +4,6 @@ using GeneralWiki.Models;
 using GeneralWiki.Service.DtoService;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Npgsql.EntityFrameworkCore.PostgreSQL;
 
 namespace GeneralWiki.Service;
 
@@ -121,7 +120,7 @@ public class EntryDataProvider(WikiContext context):IEntryDataProvider
         
         if (previousEntry != null) throw new Exception("The entry has already exist!");
         
-        var tagsInDto = entryDto.TagNames;//取出请求体中的Tag列表
+        var tagsInDto = entryDto.TagNames.Distinct();//取出请求体中的Tag列表
         var entry = new Entry
         {
             EntryId=null,
@@ -169,7 +168,7 @@ public class EntryDataProvider(WikiContext context):IEntryDataProvider
         var previousEntry = await context.Entries.FirstOrDefaultAsync(e => e.EntryId == entryDto.Id);
         if (previousEntry == null) throw new Exception("The Entry isn't exist!");
         context.Entries.Remove(previousEntry);
-        var tagsInDto = entryDto.TagNames;
+        var tagsInDto = entryDto.TagNames.Distinct();
         var entry = new Entry
         {
             Title = entryDto.Title,
