@@ -1,7 +1,9 @@
 using GeneralWiki.Application;
 using GeneralWiki.Models;
 using GeneralWiki.Service;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace GeneralWiki.Controllers;
 [Route("api/[controller]/[action]")]
@@ -23,7 +25,7 @@ public class UserController(IUserDataProvider userDataProvider) : ControllerBase
     }
 
     //Post:注册
-    [HttpPost]
+    [HttpPut]
     public async Task<ActionResult<string>> SignupAsync(string name, string email, string password)
     {
         try
@@ -38,10 +40,11 @@ public class UserController(IUserDataProvider userDataProvider) : ControllerBase
 
     //Post:退出登录
     [HttpPost]
+    [Authorize]
     public async Task<ActionResult<string>> QuitAsync()
     {
-        var staff = Startup.user.Role;
-        if (staff is Role.tourist) return Unauthorized("Only administrators have permission to quit");
+        var staff = User.FindFirstValue(ClaimTypes.Role);
+        if (staff is "tourist") return Unauthorized("Only administrators have permission to quit");
 
         try
         {
@@ -55,10 +58,11 @@ public class UserController(IUserDataProvider userDataProvider) : ControllerBase
 
     //Delete:注销账号
     [HttpDelete]
+    [Authorize]
     public async Task<ActionResult<string>> LogoutAsync()
     {
-        var staff = Startup.user.Role;
-        if (staff is Role.tourist) return Unauthorized("Only administrators have permission to log out");
+        var staff = User.FindFirstValue(ClaimTypes.Role);
+        if (staff is "tourist") return Unauthorized("Only administrators or author have permission to log out");
         try
         {
             return Ok(await userDataProvider.LogoutAsync());
@@ -99,10 +103,11 @@ public class UserController(IUserDataProvider userDataProvider) : ControllerBase
 
     //Post:修改自己的用户名
     [HttpPost]
+    [Authorize]
     public async Task<ActionResult<string>> NameModifyAsync(string newName)
     {
-        var staff = Startup.user.Role;
-        if (staff is Role.tourist) return Unauthorized("Only administrators have permission to modify name");
+        var staff = User.FindFirstValue(ClaimTypes.Role);
+        if (staff is "tourist") return Unauthorized("Only administrators have permission to modify name");
 
         try
         {

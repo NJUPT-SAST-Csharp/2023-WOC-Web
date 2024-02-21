@@ -79,10 +79,11 @@ public class EntryController(IEntryDataProvider entryDataProviderService) : Cont
 
     //POST: 新建词条
     [HttpPost]
+    [Authorize]
     public async Task<ActionResult<Entry>> PostEntry([FromForm] EntryDto entryDto)
     {
-        var staff = Startup.user.Role;
-        if (staff is Role.tourist) return Unauthorized("Only administrators or authors have permission to post entries");
+        var staff = User.FindFirstValue(ClaimTypes.Role);
+        if (staff is "tourist") return Unauthorized("Only administrators or authors have permission to post entries");
         try
         {
             return Ok(await entryDataProviderService.PostEntry(entryDto));
@@ -95,10 +96,11 @@ public class EntryController(IEntryDataProvider entryDataProviderService) : Cont
 
     //PUT: 编辑词条
     [HttpPut]
+    [Authorize]
     public async Task<IActionResult> UpdateEntry(EntryDto entryDto)
     {
-        var staff = Startup.user.Role;
-        if (staff is Role.tourist) return Unauthorized("Only administrators or authors have permission to update entries");
+        var staff = User.FindFirstValue(ClaimTypes.Role);
+        if (staff is "tourist") return Unauthorized("Only administrators or authors have permission to update entries");
         try
         {
             return Ok(await entryDataProviderService.UpdateEntry(entryDto));
@@ -111,10 +113,11 @@ public class EntryController(IEntryDataProvider entryDataProviderService) : Cont
 
     //DELETE: 删除词条
     [HttpDelete]
+    [Authorize]
     public async Task<IActionResult> DeleteEntry(string title)
     {
-        var staff = Startup.user.Role;
-        if (staff is not Role.adminstrator) return Unauthorized("Only administrators have permission to delete entries");
+        var staff = User.FindFirstValue(ClaimTypes.Role);
+        if (staff is not "adminstrator") return Unauthorized("Only administrators have permission to delete entries");
         try
         {
             return Ok(await entryDataProviderService.DeleteEntry(title));

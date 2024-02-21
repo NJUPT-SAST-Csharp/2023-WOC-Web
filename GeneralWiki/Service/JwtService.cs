@@ -9,6 +9,7 @@ namespace GeneralWiki.Service
 {
     public class JwtService
     {
+
         //产生Token
         public static string GenerateToken(User user, string secretKey)
         {
@@ -44,7 +45,7 @@ namespace GeneralWiki.Service
             return Convert.ToBase64String(randomBytes);
         }
 
-        //确认Token
+        //确认Token,同时解析Token
         public static ClaimsPrincipal ValidateToken(string token)
         {
             var tokenHandler = new JwtSecurityTokenHandler();

@@ -1,5 +1,6 @@
 ﻿using GeneralWiki.Application;
 using GeneralWiki.Data;
+using GeneralWiki.Models;
 using System.Security.Claims;
 
 namespace GeneralWiki.Service

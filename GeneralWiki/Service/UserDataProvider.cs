@@ -22,8 +22,9 @@ public class UserDataProvider(WikiContext cts): IUserDataProvider
         Startup.user = users.Single();
         await Task.Delay(1000);
 
+        var token = JwtService.GenerateToken(Startup.user, JwtService.GenerateSecretKey());
        
-        return "Login success";
+        return token;
     }
 
     public bool EmailExistOrDefault(string email) => cts.Users.Any(u => u.Email == email);
@@ -58,7 +59,9 @@ public class UserDataProvider(WikiContext cts): IUserDataProvider
 
         await Task.Delay(1000);
 
-        return "Logout success";
+        var token = JwtService.GenerateToken(Startup.user, JwtService.GenerateSecretKey());
+
+        return token;
     }
 
     public async Task<string> QuitAsync()
@@ -113,7 +116,9 @@ public class UserDataProvider(WikiContext cts): IUserDataProvider
         await cts.SaveChangesAsync();
         await Task.Delay(1000);
 
-        return "Modify success";
+        var token = JwtService.GenerateToken(userToUpdate, JwtService.GenerateSecretKey());
+
+        return token;
 
     }
 
