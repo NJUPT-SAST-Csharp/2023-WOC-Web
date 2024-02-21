@@ -1,14 +1,17 @@
-ï»¿using GeneralWiki.Models;
+using GeneralWiki.Models;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
 
 namespace GeneralWiki.Service
 {
     public class JwtService
     {
-        public string GenerateToken(User user, string secretKey)
+
+        //²úÉúToken
+        public static string GenerateToken(User user, string secretKey)
         {
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
@@ -17,7 +20,7 @@ namespace GeneralWiki.Service
             {
             new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
             new Claim(ClaimTypes.Email, user.Email),
-            // å¯ä»¥æ·»åŠ æ›´å¤šçš„å£°æ˜
+            // ¿ÉÒÔÌí¼Ó¸ü¶àµÄÉùÃ÷
         };
 
             var token = new JwtSecurityToken(
@@ -28,6 +31,46 @@ namespace GeneralWiki.Service
                 signingCredentials: creds);
 
             return new JwtSecurityTokenHandler().WriteToken(token);
+        }
+
+        //²úÉúsecretKey
+        public static string GenerateSecretKey(int length = 32)
+        {
+            byte[] randomBytes = new byte[length];
+            using(var rng = RandomNumberGenerator.Create())
+            {
+                rng.GetBytes(randomBytes);
+            }
+
+            return Convert.ToBase64String(randomBytes);
+        }
+
+        //È·ÈÏToken,Í¬Ê±½âÎöToken
+        public static ClaimsPrincipal ValidateToken(string token)
+        {
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(GenerateSecretKey()));
+
+            var validationParameters = new TokenValidationParameters
+            {
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = key,
+                ValidateIssuer = true,
+                ValidIssuer = "YourIssuer",
+                ValidateAudience = true,
+                ValidAudience = "YourAudience",
+                ClockSkew = TimeSpan.Zero
+            };
+
+            try
+            {
+                var principal = tokenHandler.ValidateToken(token, validationParameters, out _);
+                return principal;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
         }
     }
 }

@@ -39,7 +39,7 @@ public class EntryController(IEntryDataProvider entryDataProviderService) : Cont
     }
     //GET: 通过Tags获取词条
     [HttpGet]
-    public async Task<ActionResult<ICollection<Entry>>> GetEntriesByTags([FromQuery]List<string>? tagNames)
+    public async Task<ActionResult<ICollection<Entry>>> GetEntriesByTags([FromQuery] List<string>? tagNames)
     {
         try
         {
@@ -76,11 +76,14 @@ public class EntryController(IEntryDataProvider entryDataProviderService) : Cont
             return NotFound(ex.Message);
         }
     }
-    
+
     //POST: 新建词条
     [HttpPost]
-    public async Task<ActionResult<Entry>> PostEntry([FromForm]EntryDto entryDto)
+    [Authorize]
+    public async Task<ActionResult<Entry>> PostEntry([FromForm] EntryDto entryDto)
     {
+        var staff = User.FindFirstValue(ClaimTypes.Role);
+        if (staff is "tourist") return Unauthorized("Only administrators or authors have permission to post entries");
         try
         {
             return Ok(await entryDataProviderService.PostEntry(entryDto));
@@ -90,11 +93,14 @@ public class EntryController(IEntryDataProvider entryDataProviderService) : Cont
             return BadRequest(ex.Message);
         }
     }
-    
+
     //PUT: 编辑词条
     [HttpPut]
+    [Authorize]
     public async Task<IActionResult> UpdateEntry(EntryDto entryDto)
     {
+        var staff = User.FindFirstValue(ClaimTypes.Role);
+        if (staff is "tourist") return Unauthorized("Only administrators or authors have permission to update entries");
         try
         {
             return Ok(await entryDataProviderService.UpdateEntry(entryDto));
@@ -104,14 +110,14 @@ public class EntryController(IEntryDataProvider entryDataProviderService) : Cont
             return NotFound(ex.Message);
         }
     }
-    
+
     //DELETE: 删除词条
     [HttpDelete]
     [Authorize]
     public async Task<IActionResult> DeleteEntry(string title)
     {
         var staff = User.FindFirstValue(ClaimTypes.Role);
-        if (staff is not "Admin") return Unauthorized("Only administrators have permission to delete entries");
+        if (staff is not "adminstrator") return Unauthorized("Only administrators have permission to delete entries");
         try
         {
             return Ok(await entryDataProviderService.DeleteEntry(title));
