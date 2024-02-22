@@ -11,6 +11,6 @@ public interface IEntryDataProvider
     public Task<ICollection<EntryDto>> GetEntriesByCategory(string categoryName);
     public Task<IEnumerable<EntryDto>> GetEntries();
     public Task<EntryDto> PostEntry(EntryDto entryDto);
-    public Task<string> UpdateEntry(EntryDto entryDto);
+    public Task<EntryDto> UpdateEntry(EntryDto entryDto);
     public Task<string> DeleteEntry(string title);
 }
