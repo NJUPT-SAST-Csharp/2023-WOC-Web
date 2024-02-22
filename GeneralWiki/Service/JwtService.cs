@@ -9,60 +9,54 @@ namespace GeneralWiki.Service
 {
     public class JwtService
     {
+        private static TokenValidationParameters? _tokenValidationParameters;
+        private static SecurityKey? _securityKey;
+
+        public JwtService(TokenValidationParameters tokenValidationParameters, SymmetricSecurityKey securityKey)
+        {
+            _tokenValidationParameters = tokenValidationParameters;
+            _securityKey = securityKey;
+        }
 
         //产生Token
-        public static string GenerateToken(User user, string secretKey)
+        public static string GenerateToken(User user, JwtSetting jwt)
         {
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(GenerateSecretKey()));
-            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+            var creds = new SigningCredentials(_securityKey, SecurityAlgorithms.HmacSha256);
 
             var claims = new[]
             {
-            new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-            new Claim(ClaimTypes.Email, user.Email),
-            // 可以添加更多的声明
+            new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
+            new Claim(JwtRegisteredClaimNames.Email, user.Email),
+            // 可以添加角色声明
+            new Claim(ClaimTypes.Role, user.Role.ToString())
         };
 
             var token = new JwtSecurityToken(
-                issuer: "YourIssuer",
-                audience: "YourAudience",
+                issuer: jwt.Issuer,
+                audience: jwt.Audience,
                 claims: claims,
-                expires: DateTime.Now.AddHours(1),
+                expires: DateTime.Now.AddHours(jwt.AccessExpiration),
                 signingCredentials: creds);
 
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
-        //产生secretKey
-        public static string GenerateSecretKey(int length = 32)
-            => "这里是一个非常安全的密钥";
-
-        //确认Token,同时解析Token
-        public static ClaimsPrincipal ValidateToken(string token)
+        //认证Token
+        public static ClaimsPrincipal validateToken(string token) 
         {
             var tokenHandler = new JwtSecurityTokenHandler();
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(GenerateSecretKey()));
-
-            var validationParameters = new TokenValidationParameters
-            {
-                ValidateIssuerSigningKey = true,
-                IssuerSigningKey = key,
-                ValidateIssuer = true,
-                ValidIssuer = "YourIssuer",
-                ValidateAudience = true,
-                ValidAudience = "YourAudience",
-                ClockSkew = TimeSpan.Zero
-            };
 
             try
             {
-                var principal = tokenHandler.ValidateToken(token, validationParameters, out _);
+                var principal = tokenHandler.ValidateToken(token, _tokenValidationParameters, out _);
                 return principal;
             }
             catch (Exception)
             {
                 return null;
             }
+
         }
+        
     }
 }

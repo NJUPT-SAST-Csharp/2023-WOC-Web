@@ -1,6 +1,7 @@
 ﻿using GeneralWiki.Application;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 
 namespace GeneralWiki.Controllers
@@ -22,7 +23,7 @@ namespace GeneralWiki.Controllers
 
             try
             {
-                return Ok(await roleService.ApplyAdminAsync());
+                return Ok(await roleService.ApplyAdminAsync(User.FindFirstValue(JwtRegisteredClaimNames.Sub)));
             }
             catch(Exception ex) 
             {

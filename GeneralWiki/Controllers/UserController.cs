@@ -3,6 +3,7 @@ using GeneralWiki.Models;
 using GeneralWiki.Service;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 
 namespace GeneralWiki.Controllers;
@@ -38,24 +39,6 @@ public class UserController(IUserDataProvider userDataProvider) : ControllerBase
         }
     }
 
-    //Post:退出登录
-    [HttpPost]
-    [Authorize]
-    public async Task<ActionResult<string>> QuitAsync()
-    {
-        var staff = User.FindFirstValue(ClaimTypes.Role);
-        if (staff is "tourist") return Unauthorized("Only administrators have permission to quit");
-
-        try
-        {
-            return Ok(await userDataProvider.QuitAsync());
-        }
-        catch (Exception ex)
-        {
-            return BadRequest(ex.Message);
-        }
-    }
-
     //Delete:注销账号
     [HttpDelete]
     [Authorize]
@@ -65,7 +48,7 @@ public class UserController(IUserDataProvider userDataProvider) : ControllerBase
         if (staff is "tourist") return Unauthorized("Only administrators or author have permission to log out");
         try
         {
-            return Ok(await userDataProvider.LogoutAsync());
+            return Ok(await userDataProvider.LogoutAsync(User.FindFirstValue(JwtRegisteredClaimNames.Sub)));
         }
         catch (Exception ex)
         {
@@ -75,7 +58,7 @@ public class UserController(IUserDataProvider userDataProvider) : ControllerBase
 
     //Get:Id查找用户
     [HttpGet]
-    public async Task<ActionResult<User>> IdSelectUserAsync(int id)
+    public async Task<ActionResult<User>> IdSelectUserAsync(string id)
     {
         try
         {
@@ -111,7 +94,7 @@ public class UserController(IUserDataProvider userDataProvider) : ControllerBase
 
         try
         {
-            return Ok(await userDataProvider.NameModifyAsync(newName));
+            return Ok(await userDataProvider.NameModifyAsync(newName, User.FindFirstValue(JwtRegisteredClaimNames.Sub)));
         }
         catch (Exception ex)
         {
