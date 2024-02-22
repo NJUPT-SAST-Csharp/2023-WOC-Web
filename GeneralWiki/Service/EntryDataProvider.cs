@@ -163,7 +163,7 @@ public class EntryDataProvider(WikiContext context):IEntryDataProvider
     }
 
     //PUT: 编辑词条
-    public async Task<string> UpdateEntry(EntryDto entryDto)
+    public async Task<EntryDto> UpdateEntry(EntryDto entryDto)
     {
         var previousEntry = await context.Entries.FirstOrDefaultAsync(e => e.EntryId == entryDto.Id);
         if (previousEntry == null) throw new Exception("The Entry isn't exist!");
@@ -198,7 +198,11 @@ public class EntryDataProvider(WikiContext context):IEntryDataProvider
         }
         await context.Entries.AddAsync(entry);
         await context.SaveChangesAsync();
-        return "Update success!";
+        return new EntryDto
+        {
+            Id=entry.EntryId,
+            Title = entry.Title
+        };
     }
     
     //DELETE：删除词条
