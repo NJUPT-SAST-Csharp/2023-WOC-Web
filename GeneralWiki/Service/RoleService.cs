@@ -39,10 +39,29 @@ namespace GeneralWiki.Service
             return token;
         }
 
-        //取消管理员资格(这个还需要实现吗)
-        public Task<string> CancelAdminAsync(string id)
+        //取消管理员资格
+        public async Task<string> CancelAdminAsync(string quitToken)
         {
-            throw new NotImplementedException();
+            //解析确认Token
+            var principal = JwtService.validateToken(quitToken);
+
+            if (principal == null) throw new ArgumentNullException(nameof(principal));
+
+            //找到对应User
+            var id = principal.FindFirstValue(JwtRegisteredClaimNames.Sub);
+            var toUpdateUser = cts.Users.Single(u => u.Id.ToString() == id);
+            if (toUpdateUser is null) throw new ArgumentNullException(nameof(toUpdateUser));
+
+
+            if (toUpdateUser.Role is not Role.adminstrator) 
+                throw new Exception("Only administrator can be cancelled administrator");
+
+            toUpdateUser.Role = Models.Role.author;
+
+            await cts.SaveChangesAsync();
+
+            var token = JwtService.GenerateToken(toUpdateUser, new JwtSetting());
+            return token;
         }
 
     }

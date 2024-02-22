@@ -51,5 +51,26 @@ namespace GeneralWiki.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+        //取消管理员
+        [HttpPost]
+        [Authorize]
+        public async Task<ActionResult<string>> CancelAdminAsync(string quitToken)
+        {
+            var staff = User.FindFirstValue(ClaimTypes.Role);
+            if (staff is not "adminstrator")
+            {
+                Unauthorized("Only adminstrator have permission to cancel admin");
+            }
+
+            try
+            {
+                return Ok(await roleService.SetAdminAsync(quitToken));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
     }
 }
