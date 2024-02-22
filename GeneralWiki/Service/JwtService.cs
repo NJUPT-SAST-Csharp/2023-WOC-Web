@@ -11,16 +11,17 @@ namespace GeneralWiki.Service
     {
 
         //产生Token
-        public static string GenerateToken(User user, string secretKey)
+        public static string GenerateToken(User user,  string secretKey)
         {
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(GenerateSecretKey()));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
             var claims = new[]
             {
-            new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-            new Claim(ClaimTypes.Email, user.Email),
-            // 可以添加更多的声明
+            new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
+            new Claim(JwtRegisteredClaimNames.Email, user.Email),
+            // 可以添加角色声明
+            new Claim(ClaimTypes.Role, user.Role.ToString())
         };
 
             var token = new JwtSecurityToken(
@@ -33,9 +34,9 @@ namespace GeneralWiki.Service
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
-        //产生secretKey
+        //产生secretKey,后续这里会尝试非对称
         public static string GenerateSecretKey(int length = 32)
-            => "这里是一个非常安全的密钥";
+            => "FJahTzaUS+8q9ryQ8S8806jG7t2Us1g7PYsLdbOnE6I=";
 
         //确认Token,同时解析Token
         public static ClaimsPrincipal ValidateToken(string token)

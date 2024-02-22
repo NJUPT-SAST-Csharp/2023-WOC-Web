@@ -2,13 +2,22 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
+using GeneralWiki.Service.DtoService;
 
 namespace GeneralWiki.Controllers
 {
     [Route("api/[controller]/[action]")]
     [ApiController]
-    public class RoleController(IRoleServiceProvider roleService):ControllerBase
+    public class RoleController:ControllerBase
     {
+        private readonly IEntryDataProvider _entryDataProviderService;
+        private readonly IRoleServiceProvider _roleServiceProvider;
+
+       public RoleController(IEntryDataProvider entryDataProviderService, IRoleServiceProvider roleServiceProvider)
+        {
+            _entryDataProviderService = entryDataProviderService;
+            _roleServiceProvider = roleServiceProvider;
+        }
         //申请管理员
         [HttpPost]
         [Authorize]
@@ -22,7 +31,7 @@ namespace GeneralWiki.Controllers
 
             try
             {
-                return Ok(await roleService.ApplyAdminAsync());
+                return Ok(await _roleServiceProvider.ApplyAdminAsync());
             }
             catch(Exception ex) 
             {
@@ -43,7 +52,46 @@ namespace GeneralWiki.Controllers
 
             try
             {
-                return Ok(await roleService.SetAdminAsync(applyToken));
+                return Ok(await _roleServiceProvider.SetAdminAsync(applyToken));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+        // 限制只有作者角色的用户可以访问
+        [Authorize(Roles = "Author")]
+        [HttpPost]
+        public async Task<IActionResult> Create([FromBody] EntryDto entry)
+        {
+            try
+            {
+                var createdEntry = await _entryDataProviderService.PostEntry(entry);//返回一个 EntryDto 对象
+                return Ok(createdEntry);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+
+        // 限制只有管理员角色的用户可以访问
+        [Authorize(Roles = "Administrator")]
+        [HttpDelete]
+        public async Task<IActionResult> DeleteEntry(string title)
+        {
+            try
+            {
+                var deleteResult = await _entryDataProviderService.DeleteEntry(title);
+                if (!string.IsNullOrEmpty(deleteResult))
+                {
+                    return Ok($"Article with title '{title}' deleted successfully.");
+                }
+                else
+                {
+                    return NotFound($"Article with title '{title}' not found.");
+                }
             }
             catch (Exception ex)
             {
