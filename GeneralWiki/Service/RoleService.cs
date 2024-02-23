@@ -12,7 +12,7 @@ namespace GeneralWiki.Service
         public async Task<string> SetAdminAsync(string applyToken)
         {
             //解析确认Token
-            var principal = JwtService.validateToken(applyToken);
+            var principal = JwtService.ValidateToken(applyToken);
 
             if (principal == null) throw new ArgumentNullException(nameof(principal));
 
@@ -43,7 +43,7 @@ namespace GeneralWiki.Service
         public async Task<string> CancelAdminAsync(string quitToken)
         {
             //解析确认Token
-            var principal = JwtService.validateToken(quitToken);
+            var principal = JwtService.ValidateToken(quitToken);
 
             if (principal == null) throw new ArgumentNullException(nameof(principal));
 

@@ -13,7 +13,7 @@ public class UserController(IUserDataProvider userDataProvider) : ControllerBase
 {
     //Post:登录
     [HttpPost]
-    public async Task<ActionResult<string>> LoginAsync(string email, string password)
+    public async Task<ActionResult<string>> Login(string email, string password)
     {
         try
         {
@@ -27,7 +27,7 @@ public class UserController(IUserDataProvider userDataProvider) : ControllerBase
 
     //Post:注册
     [HttpPut]
-    public async Task<ActionResult<string>> SignupAsync(string name, string email, string password)
+    public async Task<ActionResult<string>> Signup(string name, string email, string password)
     {
         try
         {
@@ -42,7 +42,7 @@ public class UserController(IUserDataProvider userDataProvider) : ControllerBase
     //Delete:注销账号
     [HttpDelete]
     [Authorize]
-    public async Task<ActionResult<string>> LogoutAsync()
+    public async Task<ActionResult<string>> Logout()
     {
         var staff = User.FindFirstValue(ClaimTypes.Role);
         if (staff is "tourist") return Unauthorized("Only administrators or author have permission to log out");
@@ -58,7 +58,7 @@ public class UserController(IUserDataProvider userDataProvider) : ControllerBase
 
     //Get:Id查找用户
     [HttpGet]
-    public async Task<ActionResult<User>> IdSelectUserAsync(string id)
+    public async Task<ActionResult<User>> IdSelectUser(string id)
     {
         try
         {
@@ -72,7 +72,7 @@ public class UserController(IUserDataProvider userDataProvider) : ControllerBase
 
     //Get:Name查找用户
     [HttpGet]
-    public async Task<ActionResult<IQueryable<User>>> NameSelectUsersAsync(string name)
+    public async Task<ActionResult<IEnumerable<User>>> NameSelectUsers(string name)
     {
         try
         {
@@ -87,7 +87,7 @@ public class UserController(IUserDataProvider userDataProvider) : ControllerBase
     //Post:修改自己的用户名
     [HttpPost]
     [Authorize]
-    public async Task<ActionResult<string>> NameModifyAsync(string newName)
+    public async Task<ActionResult<string>> NameModify(string newName)
     {
         var staff = User.FindFirstValue(ClaimTypes.Role);
         if (staff is "tourist") return Unauthorized("Only administrators have permission to modify name");

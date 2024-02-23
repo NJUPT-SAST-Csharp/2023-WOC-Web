@@ -42,7 +42,7 @@ namespace GeneralWiki.Service
         }
 
         //认证Token
-        public static ClaimsPrincipal validateToken(string token) 
+        public static ClaimsPrincipal ValidateToken(string token) 
         {
             var tokenHandler = new JwtSecurityTokenHandler();
 

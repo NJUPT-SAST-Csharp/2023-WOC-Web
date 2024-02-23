@@ -13,7 +13,7 @@ namespace GeneralWiki.Controllers
         //申请管理员
         [HttpPost]
         [Authorize]
-        public async Task<ActionResult<string>> ApplyAdminAsync()
+        public async Task<ActionResult<string>> ApplyAdmin()
         {
             var staff = User.FindFirstValue(ClaimTypes.Role);
             if (staff is not "author")
@@ -34,7 +34,7 @@ namespace GeneralWiki.Controllers
         //设置为管理员
         [HttpPost]
         [Authorize]
-        public async Task<ActionResult<string>> SetAdminAsync(string applyToken)
+        public async Task<ActionResult<string>> SetAdmin(string applyToken)
         {
             var staff = User.FindFirstValue(ClaimTypes.Role);
             if (staff is not "adminstrator")
@@ -55,7 +55,7 @@ namespace GeneralWiki.Controllers
         //取消管理员
         [HttpPost]
         [Authorize]
-        public async Task<ActionResult<string>> CancelAdminAsync(string quitToken)
+        public async Task<ActionResult<string>> CancelAdmin(string quitToken)
         {
             var staff = User.FindFirstValue(ClaimTypes.Role);
             if (staff is not "adminstrator")
