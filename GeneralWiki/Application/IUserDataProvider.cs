@@ -18,7 +18,7 @@ public interface IUserDataProvider
     public Task<User> IdSelectUserAsync(string id);
     
     //Get:Name查找用户
-    public Task<IQueryable<User>> NameSelectUsersAsync(string name);
+    public Task<IEnumerable<User>> NameSelectUsersAsync(string name);
 
     //Post:修改自己的用户名
     public Task<string> NameModifyAsync(string newName, string id);
