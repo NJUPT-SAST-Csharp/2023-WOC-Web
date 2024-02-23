@@ -15,7 +15,7 @@ public class UserDataProvider(WikiContext cts): IUserDataProvider
 
         if (user is null) throw new Exception("The email has not signed up");
 
-        if (user.Email == email && user.Password == password)
+        if (user.Password != password)
         {
             throw new Exception("Password error");
         }
