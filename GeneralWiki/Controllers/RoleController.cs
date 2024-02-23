@@ -1,6 +1,7 @@
 ﻿using GeneralWiki.Application;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 
 namespace GeneralWiki.Controllers
@@ -22,7 +23,7 @@ namespace GeneralWiki.Controllers
 
             try
             {
-                return Ok(await roleService.ApplyAdminAsync());
+                return Ok(await roleService.ApplyAdminAsync(User.FindFirstValue(JwtRegisteredClaimNames.Sub)));
             }
             catch(Exception ex) 
             {
@@ -44,6 +45,27 @@ namespace GeneralWiki.Controllers
             try
             {
                 return Ok(await roleService.SetAdminAsync(applyToken));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        //取消管理员
+        [HttpPost]
+        [Authorize]
+        public async Task<ActionResult<string>> CancelAdminAsync(string quitToken)
+        {
+            var staff = User.FindFirstValue(ClaimTypes.Role);
+            if (staff is not "adminstrator")
+            {
+                Unauthorized("Only adminstrator have permission to cancel admin");
+            }
+
+            try
+            {
+                return Ok(await roleService.SetAdminAsync(quitToken));
             }
             catch (Exception ex)
             {

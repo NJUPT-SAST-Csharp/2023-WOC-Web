@@ -19,11 +19,11 @@ public class UserDataProvider(WikiContext cts): IUserDataProvider
         {
             throw new Exception("Password error");
         }
-        Startup.user = users.Single();
+        var user = users.Single();
         await Task.Delay(1000);
 
-        var token = JwtService.GenerateToken(Startup.user, JwtService.GenerateSecretKey());
-       
+        var token = JwtService.GenerateToken(user, new JwtSetting());
+
         return token;
     }
 
@@ -35,50 +35,35 @@ public class UserDataProvider(WikiContext cts): IUserDataProvider
 
         if (NameExistOrDefault(name)) throw new Exception("The name cannot access,because it is existing");
 
-        Startup.user.Name = name;
-        Startup.user.Email = email;
-        Startup.user.Password = password;
-        Startup.user.Role = Role.author; 
-
-        cts.Users.Add(Startup.user);
+        var user = new User()
+        {
+            Name = name,
+            Email = email,
+            Password = password,
+            Role = Role.author
+        };
+        cts.Users.Add(user);
         await cts.SaveChangesAsync();
-        await Task.Delay(1000);
 
         return "Signup success";
     }
 
-    public async Task<string> LogoutAsync()
+    public async Task<string> LogoutAsync(string id)
     {
-        cts.Users.Remove(Startup.user);
+
+        User user = cts.Users.Single(u => u.Id.ToString() == id);
+        cts.Users.Remove(user);
         await cts.SaveChangesAsync();
 
-        Startup.user.Name = string.Empty;
-        Startup.user.Email = string.Empty;
-        Startup.user.Password = string.Empty;
-        Startup.user.Role = Role.tourist;
-
-        await Task.Delay(1000);
-
-        var token = JwtService.GenerateToken(Startup.user, JwtService.GenerateSecretKey());
+        var token = JwtService.GenerateToken(user, new JwtSetting());
 
         return token;
     }
 
-    public async Task<string> QuitAsync()
+
+    public async Task<User> IdSelectUserAsync(string id)
     {
-        Startup.user.Name = string.Empty;
-        Startup.user.Email = string.Empty;
-        Startup.user.Password = string.Empty;
-        Startup.user.Role = Role.tourist;
-
-        await Task.Delay(1000);
-
-        return "Quit success";
-    }
-
-    public async Task<User> IdSelectUserAsync(int id)
-    {
-        User? user = cts.Users.SingleOrDefault(x => x.Id == id);
+        User? user = cts.Users.SingleOrDefault(x => x.Id.ToString() == id);
         if (user is null) throw new Exception();
         return await Task.FromResult(user);
     }
@@ -91,9 +76,10 @@ public class UserDataProvider(WikiContext cts): IUserDataProvider
         return await Task.FromResult(users);
     }
 
-    public async Task<string> NameModifyAsync(string newName)
+    public async Task<string> NameModifyAsync(string newName, string id)
     {
-        if (Startup.user.Role is Role.tourist)
+        User user = cts.Users.Single(u => u.Id.ToString() == id);
+        if (user.Role is Role.tourist)
         {
             throw new Exception("Please log in");
         }
@@ -103,42 +89,12 @@ public class UserDataProvider(WikiContext cts): IUserDataProvider
             throw new Exception("The name cannot access, because it is existing");
         }
 
-        User? userToUpdate = cts.Users.SingleOrDefault(u => u.Id == Startup.user.Id);
-
-        if (userToUpdate is null)
-        {
-            throw new Exception("The user is not existing");
-        }
-
-        userToUpdate.Name = newName;
-        Startup.user.Name = newName;
+        user.Name = newName;
 
         await cts.SaveChangesAsync();
-        await Task.Delay(1000);
 
-        var token = JwtService.GenerateToken(userToUpdate, JwtService.GenerateSecretKey());
-
+        var token = JwtService.GenerateToken(user, new JwtSetting());
         return token;
 
-    }
-    
-    public async Task<string> SetAdminAsync(int id)
-    {
-        User? user = cts.Users.Single(u => u.Id == id);
-        if (user is null) throw new Exception("The id is not existing");
-
-        user.Role = Role.adminstrator;
-        await Task.Delay(1000);
-        return "Already become administrator";
-    }
-
-    public async Task<string> SetAuthorAsync(int id)
-    {
-        User? user = cts.Users.Single(u => u.Id == id);
-        if (user is null) throw new Exception("The id is not existing");
-
-        user.Role = Role.author;
-        await Task.Delay(1000);
-        return "Already become author";
     }
 }
