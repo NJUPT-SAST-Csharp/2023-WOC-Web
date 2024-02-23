@@ -1,6 +1,7 @@
 using GeneralWiki.Application;
 using GeneralWiki.Data;
 using GeneralWiki.Models;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace GeneralWiki.Service;
@@ -30,10 +31,11 @@ public class PictureProvider(WikiContext context,IWebHostEnvironment hostEnviron
         return picture;
     }
     //GET:根据Id获取图片
-    public async Task<string> GetPictureById(int id)
+    public async Task<FileContentResult> GetPictureById(int id)
     {
         var existPicture = await context.Pictures.FirstOrDefaultAsync(p => p.PictureId == id);
         if (existPicture == null) throw new Exception("There is no picture for this id");
-        return existPicture.PictureUrl;
+        var imageBytes = File.ReadAllBytes(existPicture.PictureUrl);
+        return new FileContentResult(imageBytes, "image/jpeg");
     }
 }
