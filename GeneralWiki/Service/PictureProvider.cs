@@ -8,7 +8,7 @@ namespace GeneralWiki.Service;
 public class PictureProvider(WikiContext context,IWebHostEnvironment hostEnvironment):IPictureProvider
 {
     //POST:上传图片
-    public async Task<string> UploadPicture(IFormFile pic)
+    public async Task<Picture> UploadPicture(IFormFile pic)
     {
         if (pic.Length == 0) throw new Exception("please upload a picture");
         var rootPath = hostEnvironment.WebRootPath;
@@ -27,7 +27,7 @@ public class PictureProvider(WikiContext context,IWebHostEnvironment hostEnviron
         var picture = new Picture { PictureUrl = showPath };
         context.Pictures.Add(picture); 
         await context.SaveChangesAsync();
-        return showPath;
+        return picture;
     }
     //GET:根据Id获取图片
     public async Task<string> GetPictureById(int id)
