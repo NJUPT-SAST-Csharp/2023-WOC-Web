@@ -12,7 +12,7 @@ public class PictureController(IPictureProvider pictureProvider) : ControllerBas
     //POST:上传图片
     [HttpPost]
     [Authorize]
-    public async Task<ActionResult<string>> UploadPicture(IFormFile pic)
+    public async Task<ActionResult<string>> UploadPicture([FromForm]IFormFile pic)
     {
         var staff = User.FindFirstValue(ClaimTypes.Role);
         if (staff is "tourist") return Unauthorized("Only administrators or authors have permission to upload picture");
@@ -29,11 +29,11 @@ public class PictureController(IPictureProvider pictureProvider) : ControllerBas
 
     //GET:通过Id获取图片
     [HttpGet]
-    public async Task<ActionResult<string>> GetPictureById(int id)
+    public async Task<IActionResult> GetPictureById(int id)
     {
         try
         {
-            return Ok(await pictureProvider.GetPictureById(id));
+            return await pictureProvider.GetPictureById(id);
         }
         catch (Exception ex)
         {

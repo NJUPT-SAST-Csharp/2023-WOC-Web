@@ -1,9 +1,10 @@
 using GeneralWiki.Models;
+using Microsoft.AspNetCore.Mvc;
 
 namespace GeneralWiki.Application;
 
 public interface IPictureProvider
 {
     public Task<Picture> UploadPicture(IFormFile pic);
-    public Task<string> GetPictureById(int id);
+    public Task<FileContentResult> GetPictureById(int id);
 }
